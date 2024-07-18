@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Strategy Analysis Feed</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .entry { margin-bottom: 20px; }
+        .title { font-weight: bold; font-size: 1.2em; }
+        .link { color: blue; text-decoration: underline; }
+        .summary { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Trading Strategy Analysis Feed</h1>
+    <div id="feed"></div>
+    <script>
+        fetch('trading_strategy_analysis.xml')
+            .then(response => response.text())
+            .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+            .then(data => {
+                const feed = document.getElementById('feed');
+                const entries = data.querySelectorAll('item');
+                entries.forEach(entry => {
+                    const title = entry.querySelector('title').textContent;
+                    const link = entry.querySelector('link').textContent;
+                    const summary = entry.querySelector('description').textContent;
+
+                    const entryDiv = document.createElement('div');
+                    entryDiv.className = 'entry';
+
+                    const titleDiv = document.createElement('div');
+                    titleDiv.className = 'title';
+                    titleDiv.textContent = title;
+
+                    const linkDiv = document.createElement('div');
+                    linkDiv.className = 'link';
+                    linkDiv.innerHTML = `<a href="${link}" target="_blank">${link}</a>`;
+
+                    const summaryDiv = document.createElement('div');
+                    summaryDiv.className = 'summary';
+                    summaryDiv.textContent = summary;
+
+                    entryDiv.appendChild(titleDiv);
+                    entryDiv.appendChild(linkDiv);
+                    entryDiv.appendChild(summaryDiv);
+
+                    feed.appendChild(entryDiv);
+                });
+            });
+    </script>
+</body>
+</html>
